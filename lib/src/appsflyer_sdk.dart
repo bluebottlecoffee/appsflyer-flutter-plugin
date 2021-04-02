@@ -13,14 +13,14 @@ import 'platform_enums.dart';
 
 class AppsflyerSdk {
   static final Callbacks callbacks = Callbacks();
-  static AppsflyerSdk? _instance;
+  static AppsflyerSdk _instance;
   final MethodChannel _methodChannel;
-  final AppsFlyerOptions? afOptions;
+  final AppsFlyerOptions afOptions;
 
-  StreamController? _afGCDStreamController;
-  StreamController? _afUDLStreamController;
-  StreamController? _afOpenAttributionStreamController;
-  StreamController? _afValidtaPurchaseController;
+  StreamController _afGCDStreamController;
+  StreamController _afUDLStreamController;
+  StreamController _afOpenAttributionStreamController;
+  StreamController _afValidtaPurchaseController;
   EventChannel _eventChannel;
 
   @mustCallSuper
@@ -47,7 +47,7 @@ class AppsflyerSdk {
       );
     }
 
-    return _instance!;
+    return _instance;
   }
 
   factory AppsflyerSdk.fromMap(Map<String, dynamic> options) {
@@ -62,7 +62,7 @@ class AppsflyerSdk {
       );
     }
 
-    return _instance!;
+    return _instance;
   }
 
   AppsflyerSdk._(
@@ -85,8 +85,7 @@ class AppsflyerSdk {
 
     afOptions[AppsflyerConstants.afDevKey] = devKey;
 
-    final String? appInviteOneLink =
-        options[AppsflyerConstants.afInviteOneLink];
+    final String appInviteOneLink = options[AppsflyerConstants.afInviteOneLink];
 
     afOptions[AppsflyerConstants.afInviteOneLink] = appInviteOneLink;
 
@@ -123,14 +122,14 @@ class AppsflyerSdk {
 
     final String afDevKey = afOptions[AppsflyerConstants.afDevKey];
     final bool afShowDebug = afOptions[AppsflyerConstants.afIsDebug];
-    final String? afAppId = afOptions[AppsflyerConstants.afAppId];
-    final double? afTimeToWaitForAttUserAuthorization =
+    final String afAppId = afOptions[AppsflyerConstants.afAppId];
+    final double afTimeToWaitForAttUserAuthorization =
         afOptions[AppsflyerConstants.afTimeToWaitForAttUserAuthorization];
-    final String? afInviteOneLink =
+    final String afInviteOneLink =
         afOptions[AppsflyerConstants.afInviteOneLink];
-    final bool? disableAdvertisingIdentifier =
+    final bool disableAdvertisingIdentifier =
         afOptions[AppsflyerConstants.disableAdvertisingIdentifier];
-    final bool? disableCollectASA =
+    final bool disableCollectASA =
         afOptions[AppsflyerConstants.disableCollectASA];
 
     return AppsFlyerOptions(
@@ -153,9 +152,9 @@ class AppsflyerSdk {
     }
   }
 
-  Stream<Map>? get conversionDataStream {
-    return _afGCDStreamController?.stream.asBroadcastStream()
-        as Stream<Map<dynamic, dynamic>>?;
+  Stream<Map> get conversionDataStream {
+    return _afGCDStreamController?.stream?.asBroadcastStream()
+        as Stream<Map<dynamic, dynamic>>;
   }
 
   // Accessing AppsFlyer attribution, referred from deep linking
@@ -167,9 +166,9 @@ class AppsflyerSdk {
     }
   }
 
-  Stream<Map>? get appOpenAttributionStream {
-    return _afOpenAttributionStreamController?.stream.asBroadcastStream()
-        as Stream<Map<dynamic, dynamic>>?;
+  Stream<Map> get appOpenAttributionStream {
+    return _afOpenAttributionStreamController?.stream?.asBroadcastStream()
+        as Stream<Map<dynamic, dynamic>>;
   }
 
   // Unified deeplink: Accessing AppsFlyer deeplink attributes
@@ -182,9 +181,9 @@ class AppsflyerSdk {
     }
   }
 
-  Stream<Map>? get onDeepLinkingStream {
-    return _afUDLStreamController?.stream.asBroadcastStream()
-        as Stream<Map<dynamic, dynamic>>?;
+  Stream<Map> get onDeepLinkingStream {
+    return _afUDLStreamController?.stream?.asBroadcastStream()
+        as Stream<Map<dynamic, dynamic>>;
   }
 
   ///Returns `Stream`. Accessing AppsFlyer purchase validation data
@@ -192,12 +191,12 @@ class AppsflyerSdk {
   Stream<dynamic> _registerValidatePurchaseStream() {
     if (_afValidtaPurchaseController == null) {
       _afValidtaPurchaseController = StreamController(onCancel: () {
-        _afValidtaPurchaseController!.close();
+        _afValidtaPurchaseController.close();
       });
 
       _registerPurchaseValidateListener();
     }
-    return _afValidtaPurchaseController!.stream;
+    return _afValidtaPurchaseController.stream;
   }
 
   ///initialize the SDK, using the options initialized from the constructor|
@@ -228,7 +227,7 @@ class AppsflyerSdk {
     );
   }
 
-  Future<String?> getSDKVersion() async {
+  Future<String> getSDKVersion() async {
     final getSDKVersion = PlatformMethod.getSDKVersion.asString();
     return _methodChannel.invokeMethod(getSDKVersion);
   }
@@ -237,7 +236,7 @@ class AppsflyerSdk {
   ///campaigns/media-sources. Please take the time define the event/s you want to measure to allow you
   ///to send ROI (Return on Investment) and LTV (Lifetime Value).
   ///- The `logEvent` method allows you to send in-app events to AppsFlyer analytics. This method allows you to add events dynamically by adding them directly to the application code.
-  Future<bool?> logEvent(String eventName, Map eventValues) async {
+  Future<bool> logEvent(String eventName, Map eventValues) async {
     // ignore: unnecessary_null_comparison
     assert(eventValues != null);
 
@@ -253,7 +252,7 @@ class AppsflyerSdk {
   /// Opt-out of collection of IMEI.
   /// If the app does NOT contain Google Play Services, device IMEI is collected by the SDK.
   /// However, apps with Google play services should avoid IMEI collection as this is in violation of the Google Play policy.
-  void setCollectIMEI({required bool isCollect}) {
+  void setCollectIMEI({@required bool isCollect}) {
     final setCollectIMEI = PlatformMethod.setCollectIMEI.asString();
     _methodChannel.invokeMethod(setCollectIMEI, {'isCollect': isCollect});
   }
@@ -261,17 +260,17 @@ class AppsflyerSdk {
   /// Opt-out of collection of Android ID.
   /// If the app does NOT contain Google Play Services, Android ID is collected by the SDK.
   /// However, apps with Google play services should avoid Android ID collection as this is in violation of the Google Play policy.
-  void setCollectAndroidId({required bool isCollect}) {
+  void setCollectAndroidId({@required bool isCollect}) {
     final setCollectAndroidId = PlatformMethod.setCollectAndroidId.asString();
     _methodChannel.invokeMethod(setCollectAndroidId, {'isCollect': isCollect});
   }
 
-  Future<String?> getHostName() async {
+  Future<String> getHostName() async {
     final getHostName = PlatformMethod.getHostName.asString();
     return _methodChannel.invokeMethod(getHostName);
   }
 
-  Future<String?> getHostPrefix() async {
+  Future<String> getHostPrefix() async {
     final getHostPrefix = PlatformMethod.getHostPrefix.asString();
     return _methodChannel.invokeMethod(getHostPrefix);
   }
@@ -310,7 +309,7 @@ class AppsflyerSdk {
     _methodChannel.invokeMethod(setCustomerUserId, {'id': id});
   }
 
-  void setIsUpdate({required bool isUpdate}) {
+  void setIsUpdate({@required bool isUpdate}) {
     final setIsUpdate = PlatformMethod.setIsUpdate.asString();
     _methodChannel.invokeMethod(setIsUpdate, {'isUpdate': isUpdate});
   }
@@ -318,12 +317,12 @@ class AppsflyerSdk {
   /// Once this API is invoked, our SDK no longer communicates with our servers and stops functioning.
   /// In some extreme cases you might want to shut down all SDK activity due to legal and privacy compliance.
   /// This can be achieved with the stop API.
-  void stop({required bool isStopped}) {
+  void stop({@required bool isStopped}) {
     final stop = PlatformMethod.stop.asString();
     _methodChannel.invokeMethod(stop, {'isStopped': isStopped});
   }
 
-  void enableLocationCollection({required bool flag}) {
+  void enableLocationCollection({@required bool flag}) {
     final enableLocationCollection =
         PlatformMethod.enableLocationCollection.asString();
     _methodChannel.invokeMethod(enableLocationCollection, {'flag': flag});
@@ -343,7 +342,7 @@ class AppsflyerSdk {
   }
 
   ///Set the user emails and encrypt them.
-  void setUserEmails(List<String> emails, [EmailCryptType? cryptType]) {
+  void setUserEmails(List<String> emails, [EmailCryptType cryptType]) {
     if (cryptType != null) {
       final cryptTypeInt = EmailCryptType.values.indexOf(cryptType);
       final setUserEmailsWithCryptType =
@@ -357,13 +356,13 @@ class AppsflyerSdk {
   }
 
   ///Get AppsFlyer's unique device ID is created for every new install of an app.
-  Future<String?> getAppsFlyerUID() async {
+  Future<String> getAppsFlyerUID() async {
     final getAppsFlyerUID = PlatformMethod.getAppsFlyerUID.asString();
     return _methodChannel.invokeMethod(getAppsFlyerUID);
   }
 
   ///Set to true if you want to delay sdk init until CUID is set
-  void waitForCustomerUserId({required bool wait}) {
+  void waitForCustomerUserId({@required bool wait}) {
     final waitForCustomerUserId =
         PlatformMethod.waitForCustomerUserId.asString();
     _methodChannel.invokeMethod(waitForCustomerUserId, {'wait': wait});
@@ -375,7 +374,7 @@ class AppsflyerSdk {
       String purchaseData,
       String price,
       String currency,
-      Map<String, String>? additionalParameters) {
+      Map<String, String> additionalParameters) {
     final validateAndLogInAppAndroidPurchase =
         PlatformMethod.validateAndLogInAppAndroidPurchase.asString();
     return _methodChannel.invokeMethod(validateAndLogInAppAndroidPurchase, {
@@ -407,13 +406,13 @@ class AppsflyerSdk {
   }
 
   /// set sandbox for iOS purchase validation
-  void useReceiptValidationSandbox({required bool isSandboxEnabled}) {
+  void useReceiptValidationSandbox({@required bool isSandboxEnabled}) {
     _methodChannel.invokeMethod(
         "useReceiptValidationSandbox", isSandboxEnabled);
   }
 
   /// Set additional data to be sent to AppsFlyer.
-  void setAdditionalData(Map<String, dynamic>? customData) {
+  void setAdditionalData(Map<String, dynamic> customData) {
     final setAdditionalData = PlatformMethod.setAdditionalData.asString();
     _methodChannel.invokeMethod(setAdditionalData, {'customData': customData});
   }
@@ -421,14 +420,14 @@ class AppsflyerSdk {
   void _registerUDLListener() {
     _eventChannel.receiveBroadcastStream().listen((data) {
       final decodedJSON = jsonDecode(data);
-      final String? type = decodedJSON['type'];
+      final String type = decodedJSON['type'];
 
       if (type?.toPlatformResponse() == AppsflyerConstants.afOnDeepLink) {
         if (_afUDLStreamController != null &&
-            !_afUDLStreamController!.isClosed) {
-          _afUDLStreamController?.sink.add(decodedJSON);
+            !_afUDLStreamController.isClosed) {
+          _afUDLStreamController?.sink?.add(decodedJSON);
         } else {
-          if (afOptions != null && afOptions!.showDebug) {
+          if (afOptions != null && afOptions.showDebug) {
             printError(
                 "UDL Stream controller is closed. the event wasn't sent");
           }
@@ -440,25 +439,25 @@ class AppsflyerSdk {
   void _registerGCDListener() {
     _eventChannel.receiveBroadcastStream().listen((data) {
       final decodedJSON = jsonDecode(data);
-      final String? type = decodedJSON['type'];
+      final String type = decodedJSON['type'];
 
       switch (type) {
         case AppsflyerConstants.afGetConversionData:
           if (_afGCDStreamController != null &&
-              !_afGCDStreamController!.isClosed) {
-            _afGCDStreamController?.sink.add(decodedJSON);
+              !_afGCDStreamController.isClosed) {
+            _afGCDStreamController?.sink?.add(decodedJSON);
           } else {
-            if (afOptions != null && afOptions!.showDebug) {
+            if (afOptions != null && afOptions.showDebug) {
               print("GCD Stream controller is closed. the event wasn't sent");
             }
           }
           break;
         case AppsflyerConstants.afOnAppOpenAttribution:
           if (_afOpenAttributionStreamController != null &&
-              !_afOpenAttributionStreamController!.isClosed) {
-            _afOpenAttributionStreamController?.sink.add(decodedJSON);
+              !_afOpenAttributionStreamController.isClosed) {
+            _afOpenAttributionStreamController?.sink?.add(decodedJSON);
           } else {
-            if (afOptions != null && afOptions!.showDebug) {
+            if (afOptions != null && afOptions.showDebug) {
               print(
                   "OnAppOpenAttribution stream is closed. the event wasn't sent");
             }
@@ -471,9 +470,9 @@ class AppsflyerSdk {
   void _registerPurchaseValidateListener() {
     _eventChannel.receiveBroadcastStream().listen((data) {
       final decodedJSON = jsonDecode(data);
-      final String? type = decodedJSON['type'];
+      final String type = decodedJSON['type'];
       if (type == AppsflyerConstants.afValidatePurchase) {
-        _afValidtaPurchaseController!.sink.add(decodedJSON);
+        _afValidtaPurchaseController.sink.add(decodedJSON);
       }
     });
   }
@@ -492,9 +491,9 @@ class AppsflyerSdk {
   }
 
   void generateInviteLink(
-    AppsFlyerInviteLinkParams? params, {
-    required ResponseCallback onSuccess,
-    required ResponseCallback onError,
+    AppsFlyerInviteLinkParams params, {
+    @required ResponseCallback onSuccess,
+    @required ResponseCallback onError,
   }) {
     callbacks.startListening(
       responseCallback: onSuccess,
@@ -524,7 +523,7 @@ class AppsflyerSdk {
 
   ///To attribute an impression use the following API call.
   ///Make sure to use the promoted App ID as it appears within the AppsFlyer dashboard.
-  void logCrossPromotionImpression(String appId, String campaign, Map? data) {
+  void logCrossPromotionImpression(String appId, String campaign, Map data) {
     final logCrossPromotionImpression =
         PlatformMethod.logCrossPromotionImpression.asString();
     _methodChannel.invokeMethod(logCrossPromotionImpression,
@@ -533,7 +532,7 @@ class AppsflyerSdk {
 
   ///Use the following API to attribute the click and launch the app store's app page.
   void logCrossPromotionAndOpenStore(
-      String appId, String campaign, Map? params) {
+      String appId, String campaign, Map params) {
     final logCrossPromotionAndOpenStore =
         PlatformMethod.logCrossPromotionAndOpenStore.asString();
     _methodChannel.invokeMethod(logCrossPromotionAndOpenStore, {
@@ -549,19 +548,19 @@ class AppsflyerSdk {
     _methodChannel.invokeMethod(setOneLinkCustomDomain, brandDomains);
   }
 
-  void setPushNotification({required bool isEnabled}) {
+  void setPushNotification({@required bool isEnabled}) {
     final setPushNotification = PlatformMethod.setPushNotification.asString();
     _methodChannel.invokeMethod(setPushNotification, isEnabled);
   }
 
-  void enableFacebookDeferredApplinks({required bool isEnabled}) {
+  void enableFacebookDeferredApplinks({@required bool isEnabled}) {
     final enableFacebookDeferredApplinks =
         PlatformMethod.enableFacebookDeferredApplinks.asString();
     _methodChannel.invokeMethod(enableFacebookDeferredApplinks,
         {'isFacebookDeferredApplinksEnabled': isEnabled});
   }
 
-  void disableSKAdNetwork({required bool isEnabled}) {
+  void disableSKAdNetwork({@required bool isEnabled}) {
     final disableSKAdNetwork = PlatformMethod.disableSKAdNetwork.asString();
     _methodChannel.invokeMethod(disableSKAdNetwork, isEnabled);
   }

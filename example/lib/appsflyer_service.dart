@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppsFlyerService extends ChangeNotifier {
-  // full app restart required when changing static variables
+  // full app restart @required when changing static variables
   static const brandDomain = 'sub.domain.com';
   static const urlPrefix = 'https://$brandDomain';
 

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-typedef ObjectConverter<T> = T Function(Map<String, dynamic>? json);
-typedef DataResponse = void Function(Map<String, dynamic>? json);
+typedef ObjectConverter<T> = T Function(Map<String, dynamic> json);
+typedef DataResponse = void Function(Map<String, dynamic> json);
 typedef UnknownResponse = void Function(dynamic data);
 
 /// Either a [AppsFlyerData] or [AppsFlyerUnknown] object
@@ -12,10 +12,10 @@ abstract class AppsFlyerResponse<T> extends Equatable with Diagnosticable {
   final String status;
   final T payload;
 
-  const AppsFlyerResponse({required this.status, required this.payload});
+  const AppsFlyerResponse({@required this.status, @required this.payload});
 
   @override
-  List<Object?> get props => [status, payload];
+  List<Object> get props => [status, payload];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -27,11 +27,11 @@ abstract class AppsFlyerResponse<T> extends Equatable with Diagnosticable {
   /// Convert the successful response into the object of your choosing
   ///
   /// Note: throws an error when the object cannot be converted
-  T? map<T>(ObjectConverter<T> builder) {
+  T map<T>(ObjectConverter<T> builder) {
     final hasData = this is AppsFlyerData;
 
     if (hasData) {
-      final json = payload as Map<String, dynamic>?;
+      final json = payload as Map<String, dynamic>;
 
       return builder(json);
     }
@@ -44,12 +44,12 @@ abstract class AppsFlyerResponse<T> extends Equatable with Diagnosticable {
   ///
   /// See also: [map] to handle only known responses
   void when({
-    required DataResponse data,
-    required UnknownResponse other,
+    @required DataResponse data,
+    @required UnknownResponse other,
   }) {
     switch (runtimeType) {
       case AppsFlyerData:
-        final json = payload as Map<String, dynamic>?;
+        final json = payload as Map<String, dynamic>;
 
         data(json);
         break;
@@ -83,10 +83,10 @@ abstract class AppsFlyerResponse<T> extends Equatable with Diagnosticable {
 /// Platform Responses: [PlatformResponse.onAppOpenAttribution],
 /// [PlatformResponse.onDeepLinking], [PlatformResponse.validatePurchase],
 /// [PlatformResponse.generateInviteLinkSuccess]
-class AppsFlyerData extends AppsFlyerResponse<Map<String, dynamic>?> {
+class AppsFlyerData extends AppsFlyerResponse<Map<String, dynamic>> {
   const AppsFlyerData({
-    required String status,
-    required Map<String, dynamic>? payload,
+    @required String status,
+    @required Map<String, dynamic> payload,
   }) : super(status: status, payload: payload);
 }
 
@@ -192,9 +192,9 @@ class OneLinkBase with Diagnosticable {
   final bool isDeferred;
 
   OneLinkBase._({
-    required this.campaign,
-    required this.mediaSource,
-    required this.isDeferred,
+    @required this.campaign,
+    @required this.mediaSource,
+    @required this.isDeferred,
   });
 
   /// Convert JSON data to a [OneLinkBase]
@@ -232,10 +232,10 @@ class AppInstallResponse with Diagnosticable {
   final bool isFirstLaunch;
 
   AppInstallResponse._({
-    required this.installTime,
-    required this.status,
-    required this.message,
-    required this.isFirstLaunch,
+    @required this.installTime,
+    @required this.status,
+    @required this.message,
+    @required this.isFirstLaunch,
   });
 
   static AppInstallResponse fromJson(Map<String, dynamic> json) {

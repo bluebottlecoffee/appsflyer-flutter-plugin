@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late AppsflyerSdk instance;
+  AppsflyerSdk instance;
   var selectedMethod = "";
   const methodChannel = MethodChannel('af-api');
   const callbacksChannel = MethodChannel('callbacks');

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../appsflyer_sdk.dart';
@@ -16,8 +17,8 @@ class Callbacks {
       <PlatformResponse, ResponseCallback>{};
 
   String _unwrapJson({
-    required String argumentData,
-    required String unwrapKey,
+    @required String argumentData,
+    @required String unwrapKey,
   }) {
     return jsonDecode(argumentData)[unwrapKey];
   }
@@ -90,8 +91,8 @@ class Callbacks {
   }
 
   void _handleKnownResponse({
-    required PlatformResponse platformResponse,
-    required Map<String, dynamic> argumentMap,
+    @required PlatformResponse platformResponse,
+    @required Map<String, dynamic> argumentMap,
   }) {
     assert(argumentMap.containsKey(statusKey));
     assert(argumentMap.containsKey(dataKey));
@@ -108,19 +109,19 @@ class Callbacks {
   }
 
   void _handleCallback({
-    required PlatformResponse platformResponse,
-    required AppsFlyerResponse response,
+    @required PlatformResponse platformResponse,
+    @required AppsFlyerResponse response,
   }) {
     if (callbacksByResponse.containsKey(platformResponse)) {
-      final methodCallback = callbacksByResponse[platformResponse]!;
+      final methodCallback = callbacksByResponse[platformResponse];
 
       methodCallback(response);
     }
   }
 
   Future<CancelListening> startListening<T>({
-    required ResponseCallback responseCallback,
-    required PlatformResponse platformResponse,
+    @required ResponseCallback responseCallback,
+    @required PlatformResponse platformResponse,
   }) async {
     _channel.setMethodCallHandler(_methodCallHandler);
 

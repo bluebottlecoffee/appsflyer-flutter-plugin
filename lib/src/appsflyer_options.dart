@@ -1,16 +1,18 @@
+import 'package:flutter/foundation.dart';
+
 import '../appsflyer_sdk.dart';
 
 class AppsFlyerOptions {
   final String afDevKey;
-  final double? timeToWaitForATTUserAuthorization;
-  final String? appInviteOneLink;
-  final bool? disableAdvertisingIdentifier;
-  final bool? disableCollectASA;
+  final double timeToWaitForATTUserAuthorization;
+  final String appInviteOneLink;
+  final bool disableAdvertisingIdentifier;
+  final bool disableCollectASA;
   final bool showDebug;
   final String appId;
 
   AppsFlyerOptions({
-    required this.afDevKey,
+    @required this.afDevKey,
     this.timeToWaitForATTUserAuthorization,
     this.appInviteOneLink,
     this.disableAdvertisingIdentifier,
