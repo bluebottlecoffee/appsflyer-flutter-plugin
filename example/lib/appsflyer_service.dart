@@ -22,13 +22,12 @@ class AppsFlyerService extends ChangeNotifier {
     // Set these values in the .env file
     final dotEnv = DotEnv();
     final devKey = dotEnv.env['DEV_KEY'];
-    final appKey = Platform.isIOS ? 'IOS_APP_ID' : 'ANDROID_APP_ID';
+    final appKey = Platform.isIOS ? '0123456789' : 'com.yourcompany.yourapp';
     final appId = dotEnv.env[appKey];
 
     final options = AppsFlyerOptions(
       afDevKey: devKey,
       appId: appId,
-      showDebug: true,
     );
 
     sdk = AppsflyerSdk(options)
@@ -71,7 +70,9 @@ class AppsFlyerService extends ChangeNotifier {
 
   DeepLinkResponse _toDeepLinkResponse(json) {
     // Note: `json` can be null
-    if (json != null) return DeepLinkResponse.fromJson(json);
+    final clickEvent = Platform.isIOS ? json['click_event'] : json;
+
+    return DeepLinkResponse.fromJson(clickEvent);
 
     return null;
   }

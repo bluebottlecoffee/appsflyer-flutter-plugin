@@ -189,24 +189,20 @@ class AppsFlyerUnknown extends AppsFlyerResponse<dynamic> {
 class OneLinkBase with Diagnosticable {
   final String campaign;
   final String mediaSource;
-  final bool isDeferred;
 
   OneLinkBase._({
     @required this.campaign,
     @required this.mediaSource,
-    @required this.isDeferred,
   });
 
   /// Convert JSON data to a [OneLinkBase]
   static OneLinkBase fromJson(Map<String, dynamic> json) {
     final campaign = json['campaign'];
     final mediaSource = json['media_source'];
-    final isDeferred = json['is_deferred'];
 
     return OneLinkBase._(
       campaign: campaign,
       mediaSource: mediaSource,
-      isDeferred: isDeferred,
     );
   }
 
@@ -218,7 +214,6 @@ class OneLinkBase with Diagnosticable {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsNode.message('campaign: $campaign'));
     properties.add(DiagnosticsNode.message('mediaSource: $mediaSource'));
-    properties.add(DiagnosticsNode.message('isDeferred: $isDeferred'));
   }
 }
 

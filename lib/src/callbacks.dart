@@ -20,7 +20,9 @@ class Callbacks {
     @required String argumentData,
     @required String unwrapKey,
   }) {
-    return jsonDecode(argumentData)[unwrapKey];
+    final Map<String, dynamic> json = jsonDecode(argumentData);
+
+    return json.containsKey(unwrapKey) ? json[unwrapKey] : argumentData;
   }
 
   Future<void> _methodCallHandler(MethodCall call) async {

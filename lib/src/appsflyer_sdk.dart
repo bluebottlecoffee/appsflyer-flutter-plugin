@@ -20,7 +20,7 @@ class AppsflyerSdk {
   StreamController _afGCDStreamController;
   StreamController _afUDLStreamController;
   StreamController _afOpenAttributionStreamController;
-  StreamController _afValidtaPurchaseController;
+  StreamController _afValidatePurchaseController;
   EventChannel _eventChannel;
 
   @mustCallSuper
@@ -29,7 +29,7 @@ class AppsflyerSdk {
       _afGCDStreamController,
       _afUDLStreamController,
       _afOpenAttributionStreamController,
-      _afValidtaPurchaseController
+      _afValidatePurchaseController
     ].forEach((controller) => controller?.close());
   }
 
@@ -189,14 +189,14 @@ class AppsflyerSdk {
   ///Returns `Stream`. Accessing AppsFlyer purchase validation data
   // ignore: unused_element
   Stream<dynamic> _registerValidatePurchaseStream() {
-    if (_afValidtaPurchaseController == null) {
-      _afValidtaPurchaseController = StreamController(onCancel: () {
-        _afValidtaPurchaseController.close();
+    if (_afValidatePurchaseController == null) {
+      _afValidatePurchaseController = StreamController(onCancel: () {
+        _afValidatePurchaseController.close();
       });
 
       _registerPurchaseValidateListener();
     }
-    return _afValidtaPurchaseController.stream;
+    return _afValidatePurchaseController.stream;
   }
 
   ///initialize the SDK, using the options initialized from the constructor|
@@ -207,6 +207,11 @@ class AppsflyerSdk {
   }) async {
     return Future.delayed(Duration(seconds: 0)).then(
       (_) {
+        final listeners = {
+          AppsflyerConstants.afGCD: false,
+          AppsflyerConstants.afUDL: false,
+        };
+
         if (registerConversionDataCallback) _registerConversionDataCallback();
         if (registerOnAppOpenAttributionCallback) {
           _registerOnAppOpenAttributionCallback();
@@ -214,15 +219,19 @@ class AppsflyerSdk {
 
         if (registerConversionDataCallback ||
             registerOnAppOpenAttributionCallback) {
+          listeners[AppsflyerConstants.afGCD] = true;
           _registerGCDListener();
         }
 
         if (registerOnDeepLinkingCallback) {
+          listeners[AppsflyerConstants.afUDL] = true;
           _registerUDLCallback();
         }
 
         final initSdk = PlatformMethod.initSdk.asString();
-        return _methodChannel.invokeMethod(initSdk, afOptions?.toJson());
+        final completeOptions = afOptions.toJson()..addAll(listeners);
+
+        return _methodChannel.invokeMethod(initSdk, completeOptions);
       },
     );
   }
@@ -472,7 +481,7 @@ class AppsflyerSdk {
       final decodedJSON = jsonDecode(data);
       final String type = decodedJSON['type'];
       if (type == AppsflyerConstants.afValidatePurchase) {
-        _afValidtaPurchaseController.sink.add(decodedJSON);
+        _afValidatePurchaseController.sink.add(decodedJSON);
       }
     });
   }
