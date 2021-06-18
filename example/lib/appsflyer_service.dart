@@ -73,8 +73,6 @@ class AppsFlyerService extends ChangeNotifier {
     final clickEvent = Platform.isIOS ? json['click_event'] : json;
 
     return DeepLinkResponse.fromJson(clickEvent);
-
-    return null;
   }
 
   Future<AppsFlyerResponse> generateInviteLinkAsync(
